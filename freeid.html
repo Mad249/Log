@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>شحن ببجي UC</title>
+    <style>
+        body { background-color: #FFD700; font-family: Arial, sans-serif; text-align: center; }
+        .shipping-form { width: 80%; max-width: 600px; padding: 20px; background-color: white; margin: auto; border-radius: 10px; }
+        input, select, button { width: 100%; padding: 10px; margin: 5px 0; font-size: 16px; }
+    </style>
+</head>
+<style>.mp {
+    display: inline-block;
+    margin-top: 20px;
+    padding: 15px 30px;
+    background: white;
+    color: #ff416c;
+    text-decoration: none;
+    font-weight: bold;
+    border-radius: 30px;
+    transition: 0.3s;
+}
+</style>
+<body>
+    
+    <div class="shipping-form">
+        <h2>شحن جواهر فري فاير </h2>
+        <img src="free2.jpg" width="120">
+        <input type="text" id="name" placeholder="الاسم الكامل" required>
+        <input type="text" id="whatsapp" placeholder="رقم الواتساب" required>
+        <input type="email" id="email" placeholder="البريد الإلكتروني" required>
+        <input type="text" id="id" placeholder="ID اللاعب" required>
+        <label>الكمية:</label>
+        <select id="amount">
+            <option value="110💎">110 💎  = 2600 جنيه </option>
+            <option value="220💎">220💎 =6200 جنيه</option>
+            
+            <option value="325💎 ">325 💎  =7800 جنيه</option>
+            <option value="440 💎">440 💎 = 10000جنيه </option>
+        </select>
+        <h3>الدفع</h3>
+        <a href="#3ff" class="mp"> <button>ارقام حسابتنا</button></a>
+        <select id="paymentMethod">
+            <option value="بنكك">بنكك</option>
+            <option value="ماي كاشي">ماي كاشي</option>
+        </select>
+        <input type="number" id="transactionNumber" placeholder="رقم عملية التحويل" required>
+        <input type="file" id="uploadImage" accept="image/*">
+        <button onclick="submitForm()">إرسال</button>
+    </div>
+    <div>
+        <h4>بنكك </h4>
+        <h4>ماي كاشي 687216</h4>
+    </div>
+
+    <script>
+        function submitForm() {
+            const name = document.getElementById("name").value;
+            const whatsapp = document.getElementById("whatsapp").value;
+            const email = document.getElementById("email").value;
+            const id = document.getElementById("id").value;
+            const amount = document.getElementById("amount").value;
+            const paymentMethod = document.getElementById("paymentMethod").value;
+            const transactionNumber = document.getElementById("transactionNumber").value;
+            const imageInput = document.getElementById("uploadImage").files[0];
+
+            const message = `🔥 طلب شحن فري فاير  🔥\n\n👤 الاسم: ${name}\n📞 رقم الواتساب: ${whatsapp}\n📧 البريد الإلكتروني: ${email}\n🎮 ID: ${id}\n💰 الكمية: ${amount}\n💳 طريقة الدفع: ${paymentMethod}\n📌 رقم التحويل: ${transactionNumber}`;
+
+            const botToken = "7897122987:AAEutcCTuehzpvUGUhGWT773tCLVm8brplU";
+            const chatId = "7172098832";
+
+            if (imageInput) {
+                const formData = new FormData();
+                formData.append("chat_id", chatId);
+                formData.append("photo", imageInput);
+                formData.append("caption", message);
+
+                fetch(`https://api.telegram.org/bot${botToken}/sendPhoto`, { method: "POST", body: formData })
+                    .then(() => alert("تم الإرسال بنجاح!"))
+                    .catch(() => alert("حدث خطأ!"));
+            } else {
+                fetch(`https://api.telegram.org/bot${botToken}/sendMessage?chat_id=${chatId}&text=${encodeURIComponent(message)}`)
+                    .then(() => alert("تم الإرسال بنجاح الطلب يستغرق15 - 20دقيقة! [سيتم ارسال  رسالة تأكيد في رقم الواتساب ]✅"))
+                    .catch(() => alert(" ❌حدث خطأ!"));
+            }
+        }
+    </script>
+</body>
+</html>

