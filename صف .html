@@ -1,0 +1,149 @@
+إليك فكرة بسيطة لإنشاء متجر إلكتروني يحتوي على حسابات للمستخدمين مع محفظة للمال باستخدام HTML وJavaScript. لاستخدام تقنيات أكثر تطورًا ملكن في هذا المثال، سنرة
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>متجر إلكتروني مع محفظة مالية</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+        header {
+            background-color: #4CAF50;
+            color: white;
+            text-align: center;
+            padding: 20px;
+        }
+        .container {
+            width: 80%;
+            margin: 0 auto;
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        h2 {
+            text-align: center;
+        }
+        input[type="text"], input[type="password"], input[type="number"] {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+        }
+        button {
+            width: 100%;
+            padding: 10px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        .balance {
+            font-size: 1.5em;
+            margin: 20px 0;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>متجر إلكتروني مع محفظة مالية</h1>
+</header>
+
+<!-- صفحة تسجيل الدخول أو إنشاء حساب -->
+<div class="container">
+    <h2>تسجيل حساب جديد</h2>
+    <input type="text" id="username" placeholder="اسم المستخدم" required>
+    <input type="password" id="password" placeholder="كلمة المرور" required>
+    <button onclick="createAccount()">إنشاء الحساب</button>
+</div>
+
+<!-- صفحة الحساب الشخصي -->
+<div class="container" id="accountPage" style="display: none;">
+    <h2>مرحبًا، <span id="userNameDisplay"></span>!</h2>
+    <div class="balance">
+        الرصيد الحالي: <span id="balanceAmount">0</span> ريال
+    </div>
+    <input type="number" id="depositAmount" placeholder="أدخل المبلغ لإيداعه">
+    <button onclick="depositMoney()">إيداع المال</button>
+    <input type="number" id="withdrawAmount" placeholder="أدخل المبلغ لسحبه">
+    <button onclick="withdrawMoney()">سحب المال</button>
+</div>
+
+<script>
+// محاكاة حساب المستخدم
+let currentUser = null;
+let users = [];
+
+// إنشاء الحساب
+function createAccount() {
+    const username = document.getElementById("username").value;
+    const password = document.getElementById("password").value;
+
+    if (username && password) {
+        // إنشاء حساب جديد للمستخدم
+        const newUser = {
+            username: username,
+            password: password,
+            balance: 0
+        };
+
+        users.push(newUser);
+        currentUser = newUser;  // تعيين المستخدم الحالي
+
+        // إخفاء صفحة التسجيل وإظهار صفحة الحساب
+        document.querySelector('.container').style.display = 'none';
+        document.getElementById('accountPage').style.display = 'block';
+        document.getElementById('userNameDisplay').innerText = username;
+    } else {
+        alert("الرجاء ملء جميع الحقول.");
+    }
+}// إيداع المال
+function depositMoney() {
+    const amount = parseFloat(document.getElementById("depositAmount").value);
+    if (amount > 0) {
+        currentUser.balance += amount;
+        document.getElementById("balanceAmount").innerText = currentUser.balance;
+        document.getElementById("depositAmount").value = '';  // مسح حقل الإدخال
+    } else {
+        alert("الرجاء إدخال مبلغ صحيح.");
+    }
+}
+
+// سحب المال
+function withdrawMoney() {
+    const amount = parseFloat(document.getElementById("withdrawAmount").value);
+    if (amount > 0 && amount <= currentUser.balance) {
+        currentUser.balance -= amount;
+        document.getElementById("balanceAmount").innerText = currentUser.balance;
+        document.getElementById("withdrawAmount").value = '';  // مسح حقل الإدخال
+    } else {
+        alert("المبلغ غير كافٍ أو المدخل غير صحيح.");
+    }
+}
+</script>
+
+</body>
+</html>
+```
+
+شرح الكود:
+
+1. *الصفحة الرئيسية (تسجيل الحساب)*:
+   - عند أول دخول، يظهر للمستخدم صفحة بسيطة لتسجيل الحساب الجديد عن طريق إدخال *اسم المستخدم* وكلمة المرور.
+   - عند الضغط على زر "إنشاء الحساب"، يتم إنشاء الحساب وتخزينه في *مصفوفة `users`*.
+   - يتم الانتقال إلى صفحة *الحساب الشخصي* بعد إنشاء الحساب.
+
+2. *الصفحة الشخصية (حساب المستخدم)*:
+   - بعد إنشاء الحساب، يتم عرض اسم المستخدم ورصيده الحالي.

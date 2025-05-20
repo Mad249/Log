@@ -1,0 +1,164 @@
+
+
+الكود:
+
+```html
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>لعبة إكس-أو مع الهاتف</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #f0f0f0;
+        }
+        h1 {
+            color: #333;
+        }
+        .board {
+            display: grid;
+            grid-template-columns: repeat(3, 100px);
+            grid-template-rows: repeat(3, 100px);
+            gap: 5px;
+            margin: 20px auto;
+            width: 320px;
+            height: 320px;
+        }
+        .cell {
+            width: 100px;
+            height: 100px;
+            background-color: #fff;
+            border: 2px solid #333;
+            font-size: 2em;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+        .cell:hover {
+            background-color: #f0f0f0;
+        }
+        button {
+            padding: 10px 20px;
+            margin: 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        #message {
+            font-size: 1.5em;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+
+<h1>لعبة إكس-أو ضد الهاتف</h1>
+<div class="board" id="board"></div>
+<button onclick="resetGame()">إعادة تشغيل</button>
+<div id="message"></div>
+
+<audio id="clickSound" src="https://www.soundjay.com/button/beep-07.wav" preload="auto"></audio>
+<audio id="winSound" src="https://www.soundjay.com/button/beep-06.wav" preload="auto"></audio>
+
+<script>
+    let board = [];
+    let currentPlayer = 'X'; // يبدأ اللاعب X
+    let gameOver = false;
+
+    const boardElement = document.getElementById('board');
+    const messageElement = document.getElementById('message');
+
+    // إنشاء المربعات
+    function createBoard() {
+        for (let i = 0; i < 9; i++) {
+            const cell = document.createElement('div');
+            cell.classList.add('cell');
+            cell.dataset.index = i;
+            cell.addEventListener('click', handleClick);
+            boardElement.appendChild(cell);
+            board.push(null);
+        }
+    }
+
+    // التعامل مع النقر على المربعات
+    function handleClick(event) {
+        const index = event.target.dataset.index;
+        if (board[index] || gameOver) return;
+
+        board[index] = currentPlayer;
+        event.target.textContent = currentPlayer;
+
+        document.getElementById('clickSound').play();
+
+        if (checkWinner(currentPlayer)) {
+            messageElement.textContent = `${currentPlayer} فاز!`;
+            document.getElementById('winSound').play();
+            gameOver = true;
+            return;
+        }
+
+        currentPlayer = currentPlayer === 'X' ? 'O' : 'X'; // التبديل بين X و O
+        if (currentPlayer === 'O') {
+            setTimeout(aiMove, 500); // تحرك الذكاء الاصطناعي بعد تأخير صغير
+        }
+    }
+
+    // فحص الفائز
+    function checkWinner(player) {
+        const winPatterns = [
+            [0, 1, 2], [3, 4, 5], [6, 7, 8],  // صفوف
+            [0, 3, 6], [1, 4, 7], [2, 5, 8],  // أعمدة
+            [0, 4, 8], [2, 4, 6]               // قطري
+        ];
+
+        return winPatterns.some(pattern => {
+            return pattern.every(index => board[index] === player);
+        });
+    }
+
+    // تحرك الذكاء الاصطناعي
+    function aiMove() {
+        if (gameOver) return;
+        let availableCells = board.map((cell, index) => cell === null ? index : null).filter(index => index !== null);
+        if (availableCells.length === 0) return; // لا توجد حركات متاحة
+
+        // اختيار حركة عشوائية من الحركات المتاحة
+        const randomMove = availableCells[Math.floor(Math.random() * availableCells.length)];
+        board[randomMove] = 'O';
+        const cell = boardElement.children[randomMove];
+        cell.textContent = 'O';
+
+        if (checkWinner('O')) {
+            messageElement.textContent = 'O فاز!';
+            document.getElementById('winSound').play();
+            gameOver = true;
+        } else {
+            currentPlayer = 'X'; // بعد تحرك الكمبيوتر، يعود الدور للاعب
+        }
+    }
+
+    // إعادة تشغيل اللعبة
+    function resetGame() {
+        board = [];
+        currentPlayer = 'X';
+        gameOver = false;
+        messageElement.textContent = '';
+        Array.from(boardElement.children).forEach(cell => cell.textContent = '');
+        createBoard();
+    }
+
+    // بدء اللعبة
+    createBoard();
+</script>
+
+</body>
+</html>
